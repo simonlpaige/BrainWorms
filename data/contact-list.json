@@ -1,0 +1,28 @@
+{
+  "generated_at": "2026-04-30T01:05:00Z",
+  "businesses": [
+    {
+      "name": "simonlpaige web design",
+      "prospects": [
+        {
+          "name": "Jerri / Konrad — Brookside Party Warehouse",
+          "last_touch": "2026-04-29",
+          "heat": "hot",
+          "suggested_action": "Get outcome of Apr 29 1pm meeting logged — if no close, call Konrad directly today and set a deadline."
+        },
+        {
+          "name": "Priority Dental — Independence",
+          "last_touch": "2026-04-24",
+          "heat": "warm",
+          "suggested_action": "Send the email (parked domain hook) to (816) 257-3720 — scripts already written, just hit send."
+        },
+        {
+          "name": "Liberty Oaks Dental Group — Liberty",
+          "last_touch": "2026-04-24",
+          "heat": "warm",
+          "suggested_action": "Send geo-block hook email to (816) 728-2979 — second highest urgency after Priority Dental."
+        }
+      ]
+    }
+  ]
+}

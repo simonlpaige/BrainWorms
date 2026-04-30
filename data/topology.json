@@ -1,0 +1,76 @@
+{
+  "generated_at": "2026-04-30T00:00:18-05:00",
+  "nodes": [
+    { "id": "telegram",        "label": "Telegram",         "group": "channels",    "learning": "Primary inbound channel; Simon-only (chat_id 6187134939); cron jobs deliver here every hour.",              "x": 60,  "y": 120 },
+    { "id": "dashboard",       "label": "Dashboard",        "group": "channels",    "learning": "OpenBrain web UI reads openbrain/data/ JSON files; topology widget drives this render.",                       "x": 60,  "y": 280 },
+    { "id": "cli",             "label": "CLI",              "group": "channels",    "learning": "Direct terminal access; used for manual sessions and Claude Code spawns.",                                     "x": 60,  "y": 440 },
+
+    { "id": "brain",           "label": "Brain (Larry)",    "group": "brain",       "learning": "Anthropic is sole tool-calling provider; fallbacks [openai, deepseek, ollama] are reasoning-only. 27 cron jobs registered, 20 enabled.",  "x": 500, "y": 350 },
+
+    { "id": "anthropic",       "label": "Anthropic",        "group": "providers",   "learning": "Primary provider (claude-sonnet-4-6); tool-calling enabled; only provider that can run shell/read_file/write_file loops.",  "x": 880, "y": 120 },
+    { "id": "openai",          "label": "OpenAI",           "group": "providers",   "learning": "Fallback #1 (gpt-5.5); no tool-calling in Larry's current build — reasoning-only fallback.",                  "x": 880, "y": 240 },
+    { "id": "deepseek",        "label": "DeepSeek",         "group": "providers",   "learning": "Fallback #2 (deepseek-chat); mandatory red-team step for strategic research via tools/deepseek.js.",          "x": 880, "y": 360 },
+    { "id": "ollama",          "label": "Ollama (local)",   "group": "providers",   "learning": "Fallback #3 (qwen3.6:27b @ localhost:11434); free inference; no tool-calling; 300s timeout.",                 "x": 880, "y": 480 },
+
+    { "id": "shell",           "label": "shell",            "group": "tools",       "learning": "High-frequency tool; bash/pwsh dual-mode; librarian-nightly failing (spawn error — bash not in PATH on this host).", "x": 360, "y": 60  },
+    { "id": "read_file",       "label": "read_file",        "group": "tools",       "learning": "Heavily used for memory injection; allowed paths C:/ unrestricted; reads MEMORY.md, daily files, openbrain data.", "x": 360, "y": 120 },
+    { "id": "write_file",      "label": "write_file",       "group": "tools",       "learning": "Writes openbrain/data/*.json for all widgets; allowed C:/ unrestricted; used by every prompt cron that produces data.", "x": 360, "y": 180 },
+    { "id": "http_get",        "label": "http_get",         "group": "tools",       "learning": "Used by ai-scout-sweep for HN/reddit/GitHub fetches; Brave Search API via tools/web-search.js.",             "x": 360, "y": 240 },
+    { "id": "delegate_claude", "label": "delegate_claude",  "group": "tools",       "learning": "Routes to claude CLI (Max flat-rate); ai-scout-implement spawns it nightly; preferred coding workhorse.",     "x": 360, "y": 300 },
+    { "id": "delegate_codex",  "label": "delegate_codex",   "group": "tools",       "learning": "Codex CLI fallback at AppData/Roaming/npm/codex.cmd; second choice when Claude Code is busy.",               "x": 360, "y": 360 },
+    { "id": "list_skills",     "label": "list_skills",      "group": "tools",       "learning": "2 skills registered (cloudflare-api, find_or_build_capability); README excluded from list.",                  "x": 360, "y": 420 },
+    { "id": "load_skill",      "label": "load_skill",       "group": "tools",       "learning": "Loads skill .md body on demand; skills-tools-mcp inventory last ran successfully at 21:52.",                  "x": 360, "y": 480 },
+
+    { "id": "skill_cloudflare_api",          "label": "cloudflare-api",          "group": "skills", "learning": "Loaded on demand for DNS/WAF/Workers/Email Routing ops; last written 2026-04-29 12:04.", "x": 200, "y": 540 },
+    { "id": "skill_find_or_build_capability","label": "find-or-build-capability","group": "skills", "learning": "Decision loop for missing capabilities; loaded on demand before asking Simon for help.",    "x": 200, "y": 600 },
+
+    { "id": "daily_memory",    "label": "Daily Memory",     "group": "storage",     "learning": "Today's file (2026-04-30.md) is 1.8KB; yesterday's (2026-04-29.md) is 177.5KB — heavy session day. Written each session.", "x": 640, "y": 80  },
+    { "id": "memory_md",       "label": "MEMORY.md",        "group": "storage",     "learning": "14.5KB; last written 2026-04-28 — dreaming promotes to here. Read-only during sessions.",                   "x": 640, "y": 160 },
+    { "id": "memory_proposed", "label": "MEMORY-proposed",  "group": "storage",     "learning": "8.9KB proposed by last dreaming run (2026-04-29 23:01); 16 insights proposed across 7 days — awaiting Simon review.", "x": 640, "y": 240 },
+    { "id": "sessions_jsonl",  "label": "Sessions",         "group": "storage",     "learning": "27 session files, 0.2MB total; attention-rollup classifies these into 6 categories nightly.",               "x": 640, "y": 320 },
+    { "id": "scout_actions",   "label": "Scout Actions",    "group": "storage",     "learning": "581B at openbrain/data/scout-actions.json; queued items flow to scout-followups widget daily at 09:00.",    "x": 640, "y": 400 },
+    { "id": "openbrain_data",  "label": "OpenBrain Data",   "group": "storage",     "learning": "14 JSON files, 48.7KB total; written by cron producers, read by dashboard widgets in real-time.",           "x": 640, "y": 480 },
+
+    { "id": "cron_scheduler",  "label": "Cron Scheduler",   "group": "automations", "learning": "20 enabled / 9 disabled jobs; last confirmed run 2026-04-30 00:01 (telegram-recent-sends ok). stripe-subs failing 100% — broken path in script.", "x": 640, "y": 560 },
+    { "id": "scout_pipeline",  "label": "Scout Pipeline",   "group": "automations", "learning": "3-stage: ai-scout-sweep (8+20h) -> ai-scout-archive (+10min) -> scout-followups (09:00). skills-tools-mcp ok at 21:52 (32 items).", "x": 640, "y": 620 },
+    { "id": "dreaming",        "label": "Dreaming",         "group": "automations", "learning": "Ran successfully 2026-04-29 23:02 (117s); 16 insights proposed; promotes short-term to MEMORY-proposed.md.", "x": 640, "y": 680 },
+    { "id": "security_scan",   "label": "Security Scan",    "group": "automations", "learning": "nightly-security ran ok 2026-04-29 22:02 (122s); hit max_iterations=30 — partial response, not a failure.", "x": 750, "y": 560 },
+    { "id": "host_audit",      "label": "Host Audit",       "group": "automations", "learning": "syseng-biweekly last wrote host-audit.json 2026-04-29 11:51 (4060B); reports disk/RAM/ports/uptime.", "x": 750, "y": 620 },
+
+    { "id": "windows_host",    "label": "Windows Host",     "group": "host",        "learning": "See host-audit; RTX 4060 Ti 16GB, i7-12700K, 32GB RAM. larry-daily-backup failing — git push path error.", "x": 880, "y": 600 }
+  ],
+  "edges": [
+    { "from": "telegram",        "to": "brain" },
+    { "from": "brain",           "to": "telegram" },
+    { "from": "dashboard",       "to": "brain" },
+    { "from": "cli",             "to": "brain" },
+    { "from": "brain",           "to": "anthropic" },
+    { "from": "anthropic",       "to": "brain" },
+    { "from": "brain",           "to": "openai" },
+    { "from": "openai",          "to": "brain" },
+    { "from": "brain",           "to": "deepseek" },
+    { "from": "deepseek",        "to": "brain" },
+    { "from": "brain",           "to": "ollama" },
+    { "from": "ollama",          "to": "brain" },
+    { "from": "brain",           "to": "shell" },
+    { "from": "brain",           "to": "read_file" },
+    { "from": "brain",           "to": "write_file" },
+    { "from": "brain",           "to": "http_get" },
+    { "from": "brain",           "to": "delegate_claude" },
+    { "from": "brain",           "to": "delegate_codex" },
+    { "from": "brain",           "to": "list_skills" },
+    { "from": "brain",           "to": "load_skill" },
+    { "from": "cron_scheduler",  "to": "brain" },
+    { "from": "cron_scheduler",  "to": "shell" },
+    { "from": "brain",           "to": "daily_memory" },
+    { "from": "daily_memory",    "to": "brain" },
+    { "from": "memory_md",       "to": "brain" },
+    { "from": "dreaming",        "to": "memory_proposed" },
+    { "from": "brain",           "to": "sessions_jsonl" },
+    { "from": "scout_pipeline",  "to": "openbrain_data" },
+    { "from": "security_scan",   "to": "openbrain_data" },
+    { "from": "host_audit",      "to": "openbrain_data" },
+    { "from": "brain",           "to": "skill_cloudflare_api" },
+    { "from": "brain",           "to": "skill_find_or_build_capability" }
+  ]
+}

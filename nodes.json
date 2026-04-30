@@ -1,0 +1,30 @@
+{
+  "_comment": "open-brain registers each agent runtime as a node. Every node MUST expose GET /api/status returning at minimum {version, providers, cron_job_count, telegram (or any 'health' boolean), tools_enabled}. Optional endpoints: /api/cron, /api/cron/runs, /api/sessions, /api/tools, POST /api/ask, POST /api/cron/run. Larry is the reference impl.",
+  "nodes": [
+    {
+      "id": "larry",
+      "name": "Larry",
+      "kind": "larry",
+      "base_url": "http://127.0.0.1:18790",
+      "token": null,
+      "refresh_s": 5,
+      "color": "#c8b780"
+    }
+  ],
+  "_future_examples_": [
+    {
+      "id": "claude-code-host",
+      "name": "Claude Code (long-running)",
+      "kind": "claude-code",
+      "base_url": "http://127.0.0.1:18800",
+      "comment": "would expose /api/status with active session count and last completion timestamp"
+    },
+    {
+      "id": "stripe-monitor",
+      "name": "Stripe Monitor",
+      "kind": "stripe",
+      "base_url": "http://127.0.0.1:18801",
+      "comment": "thin daemon that polls Stripe and exposes a status endpoint with subs/MRR/last_error"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "generated_at": "2026-04-30T04:00:00-05:00",
+  "longterm_chars": 14820,
+  "longterm_lines": 150,
+  "proposed_count": 16,
+  "daily_files": [
+    { "date": "2026-04-25", "chars": 53654, "lines": 598 },
+    { "date": "2026-04-26", "chars": 1398, "lines": 14 },
+    { "date": "2026-04-26-anvilshare-refresh", "chars": 3295, "lines": 39 },
+    { "date": "2026-04-26-moltbook-post", "chars": 8034, "lines": 123 },
+    { "date": "2026-04-26-phase1-done", "chars": 6277, "lines": 95 },
+    { "date": "2026-04-26-rivaldrop-refresh", "chars": 4172, "lines": 56 },
+    { "date": "2026-04-28", "chars": 3983, "lines": 19 },
+    { "date": "2026-04-29", "chars": 165542, "lines": 3262 }
+  ],
+  "categories": {
+    "stable_facts": 5,
+    "patterns": 5,
+    "broken_things": 4,
+    "drifts": 4
+  }
+}

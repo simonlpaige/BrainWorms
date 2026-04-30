@@ -1,0 +1,70 @@
+{
+  "generated_at": "2026-04-30T03:15:00Z",
+  "window_hours": 12,
+  "items": [
+    {
+      "ts": "2026-04-30T01:00:00Z",
+      "title": "mattpocock/skills – Skills for Real Engineers from .claude directory",
+      "source": "github-trending",
+      "url": "https://github.com/mattpocock/skills",
+      "why": "7,280 stars today — prompts/skills pulled directly from a pro .claude dir; practical Larry skill inspiration",
+      "suggested_action": "skim the repo; cherry-pick any prompt patterns worth adding to Larry's skills/"
+    },
+    {
+      "ts": "2026-04-30T01:00:00Z",
+      "title": "obra/superpowers – Agentic skills framework and software development methodology",
+      "source": "github-trending",
+      "url": "https://github.com/obra/superpowers",
+      "why": "1,653 stars today; 173K total — battle-tested agent skill methodology, likely overlaps with Larry's coding-agent skill",
+      "suggested_action": "read README; compare methodology to Larry's skills/ — adopt any gaps, delegate Claude Code to wrap if useful"
+    },
+    {
+      "ts": "2026-04-30T01:00:00Z",
+      "title": "ComposioHQ/awesome-codex-skills – Curated practical Codex skills for CLI and API",
+      "source": "github-trending",
+      "url": "https://github.com/ComposioHQ/awesome-codex-skills",
+      "why": "1,177 stars today; directly applicable to Codex CLI in Larry's stack",
+      "suggested_action": "scan list for RivalDrop/Anvilshare workflow automations; adopt 1-2 concrete ones"
+    },
+    {
+      "ts": "2026-04-30T01:00:00Z",
+      "title": "HERMES.md in commit messages routes to extra usage billing in Claude Code",
+      "source": "HN",
+      "url": "https://github.com/anthropics/claude-code/issues/53262",
+      "why": "1,099 points — any file named HERMES.md in a commit triggers billing escalation; Larry uses 'Hermes' naming",
+      "suggested_action": "check Larry's codebase for any HERMES.md files; rename if found to avoid surprise billing"
+    },
+    {
+      "ts": "2026-04-30T01:00:00Z",
+      "title": "Hermes Agent v0.11.0 – React/Ink TUI rewrite, AWS Bedrock, GPT-5.5 via Codex OAuth, pluggable transports",
+      "source": "hermes-agent-releases",
+      "url": "https://github.com/NousResearch/hermes-agent/releases/tag/v2026.4.23",
+      "why": "Larry's codebase tracks this lineage; v0.11.0 ships mid-run /steer nudges and per-job cron toolset caps",
+      "suggested_action": "skim highlights for /steer and cron per-job toolset — both directly applicable to Larry's cron system"
+    },
+    {
+      "ts": "2026-04-30T01:00:00Z",
+      "title": "Alignment whack-a-mole: Finetuning activates recall of copyrighted books in LLMs",
+      "source": "HN",
+      "url": "https://github.com/cauchy221/Alignment-Whack-a-Mole-Code",
+      "why": "116 points — alignment evals research; relevant to Commonweave/WaldoNet AI ethics framing",
+      "suggested_action": "drop a star; file as background for WaldoNet AI safety talking points"
+    },
+    {
+      "ts": "2026-04-30T01:00:00Z",
+      "title": "Vera – a programming language designed for machines to write",
+      "source": "HN",
+      "url": "https://github.com/aallan/vera",
+      "why": "87 points — agent-native language design; intersects with AgentStack infrastructure thinking",
+      "suggested_action": "skim README; note design decisions for AgentStack wedge research"
+    },
+    {
+      "ts": "2026-04-30T01:00:00Z",
+      "title": "Claude Opus 4.7 + Claude Design + Claude for Creative Work (Anthropic, Apr 16-28)",
+      "source": "anthropic-changelog",
+      "url": "https://www.anthropic.com/news",
+      "why": "Opus 4.7 ships stronger coding/agents; Claude Design is a new Labs visual product — both affect Simon's stack",
+      "suggested_action": "test Opus 4.7 on a RivalDrop scoring task vs current; note Claude Design for simonlpaige web design pitch"
+    }
+  ]
+}

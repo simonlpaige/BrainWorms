@@ -1,0 +1,26 @@
+{
+  "generated_at": "2026-04-30T03:00:18Z",
+  "window_hours": 6,
+  "items": [
+    {
+      "ts": "2026-04-30T01:30:34Z",
+      "title": "Close Brookside Party Warehouse today. Yesterday's 1pm meeting with Jerri happened",
+      "why": "cron:daily-sales-action — daily sales focus push"
+    },
+    {
+      "ts": "2026-04-30T01:01:19Z",
+      "title": "Today's contact list — Jerri/Konrad Brookside Party Warehouse (hot), Priority Dental",
+      "why": "cron:contact-list-rollup — daily next-clients-to-contact list"
+    },
+    {
+      "ts": "2026-04-30T00:02:42Z",
+      "title": "[topology] 30 nodes / 32 edges",
+      "why": "cron:topology-snapshot — WormHole topology snapshot for dashboard"
+    },
+    {
+      "ts": "2026-04-30T00:01:12Z",
+      "title": "ok – 18 items written",
+      "why": "cron:telegram-recent-sends — hourly widget refresh"
+    }
+  ]
+}

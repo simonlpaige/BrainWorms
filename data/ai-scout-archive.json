@@ -1,0 +1,132 @@
+{
+  "generated_at": "2026-04-30T03:20:00Z",
+  "window_days": 30,
+  "items": [
+    {
+      "seen_at": "2026-04-30T03:15:00Z",
+      "ts": "2026-04-30T01:00:00Z",
+      "title": "obra/superpowers – Agentic skills framework and software development methodology",
+      "source": "github-trending",
+      "url": "https://github.com/obra/superpowers",
+      "why": "1,653 stars today; 173K total — battle-tested agent skill methodology, likely overlaps with Larry's coding-agent skill",
+      "suggested_action": "read README; compare methodology to Larry's skills/ — adopt any gaps, delegate Claude Code to wrap if useful"
+    },
+    {
+      "seen_at": "2026-04-30T03:15:00Z",
+      "ts": "2026-04-30T01:00:00Z",
+      "title": "HERMES.md in commit messages routes to extra usage billing in Claude Code",
+      "source": "HN",
+      "url": "https://github.com/anthropics/claude-code/issues/53262",
+      "why": "1,099 points — any file named HERMES.md in a commit triggers billing escalation; Larry uses 'Hermes' naming",
+      "suggested_action": "check Larry's codebase for any HERMES.md files; rename if found to avoid surprise billing"
+    },
+    {
+      "seen_at": "2026-04-30T03:15:00Z",
+      "ts": "2026-04-30T01:00:00Z",
+      "title": "Hermes Agent v0.11.0 – React/Ink TUI rewrite, AWS Bedrock, GPT-5.5 via Codex OAuth, pluggable transports",
+      "source": "hermes-agent-releases",
+      "url": "https://github.com/NousResearch/hermes-agent/releases/tag/v2026.4.23",
+      "why": "Larry's codebase tracks this lineage; v0.11.0 ships mid-run /steer nudges and per-job cron toolset caps",
+      "suggested_action": "skim highlights for /steer and cron per-job toolset — both directly applicable to Larry's cron system"
+    },
+    {
+      "seen_at": "2026-04-30T03:15:00Z",
+      "ts": "2026-04-30T01:00:00Z",
+      "title": "Alignment whack-a-mole: Finetuning activates recall of copyrighted books in LLMs",
+      "source": "HN",
+      "url": "https://github.com/cauchy221/Alignment-Whack-a-Mole-Code",
+      "why": "116 points — alignment evals research; relevant to Commonweave/WaldoNet AI ethics framing",
+      "suggested_action": "drop a star; file as background for WaldoNet AI safety talking points"
+    },
+    {
+      "seen_at": "2026-04-30T03:15:00Z",
+      "ts": "2026-04-30T01:00:00Z",
+      "title": "Vera – a programming language designed for machines to write",
+      "source": "HN",
+      "url": "https://github.com/aallan/vera",
+      "why": "87 points — agent-native language design; intersects with AgentStack infrastructure thinking",
+      "suggested_action": "skim README; note design decisions for AgentStack wedge research"
+    },
+    {
+      "seen_at": "2026-04-30T03:15:00Z",
+      "ts": "2026-04-30T01:00:00Z",
+      "title": "Claude Opus 4.7 + Claude Design + Claude for Creative Work (Anthropic, Apr 16-28)",
+      "source": "anthropic-changelog",
+      "url": "https://www.anthropic.com/news",
+      "why": "Opus 4.7 ships stronger coding/agents; Claude Design is a new Labs visual product — both affect Simon's stack",
+      "suggested_action": "test Opus 4.7 on a RivalDrop scoring task vs current; note Claude Design for simonlpaige web design pitch"
+    },
+    {
+      "seen_at": "2026-04-29T10:45:00.000Z",
+      "ts": "2026-04-29T10:00:00.000Z",
+      "title": "warpdotdev/warp — Agentic development environment, born out of the terminal",
+      "source": "github-trending",
+      "url": "https://github.com/warpdotdev/warp",
+      "why": "Rust terminal going fully agentic; 11,955 stars today signals massive developer interest",
+      "suggested_action": "skim README to see if agentic terminal hooks could replace any Larry CLI tooling"
+    },
+    {
+      "seen_at": "2026-04-29T10:45:00.000Z",
+      "ts": "2026-04-29T10:00:00.000Z",
+      "title": "mattpocock/skills — Skills from .claude directory for Real Engineers",
+      "source": "github-trending",
+      "url": "https://github.com/mattpocock/skills",
+      "why": "7,356 stars today; viral .claude skill sharing is exactly what Larry already does — check for new patterns",
+      "suggested_action": "read top 5 skills in repo, cherry-pick any that improve Larry's coding or research workflows"
+    },
+    {
+      "seen_at": "2026-04-29T10:45:00.000Z",
+      "ts": "2026-04-29T10:00:00.000Z",
+      "title": "ComposioHQ/awesome-codex-skills — Curated Codex CLI skills for automating workflows",
+      "source": "github-trending",
+      "url": "https://github.com/ComposioHQ/awesome-codex-skills",
+      "why": "Skills-as-code pattern exploding; 1,180 stars today; directly maps to our Larry skills architecture",
+      "suggested_action": "scan list for any skills applicable to RivalDrop autoresearch or Commonweave outreach automation"
+    },
+    {
+      "seen_at": "2026-04-29T10:45:00.000Z",
+      "ts": "2026-04-29T10:00:00.000Z",
+      "title": "abhigyanpatwari/GitNexus — Client-side Graph RAG over any GitHub repo, zero server",
+      "source": "github-trending",
+      "url": "https://github.com/abhigyanpatwari/GitNexus",
+      "why": "Local-first Graph RAG with interactive knowledge graph; directly relevant to AgentStack codebase intel",
+      "suggested_action": "try dropping the AgentStack or Commonweave repo in and see if the knowledge graph is useful"
+    },
+    {
+      "seen_at": "2026-04-29T10:45:00.000Z",
+      "ts": "2026-04-29T10:00:00.000Z",
+      "title": "Ghostty is leaving GitHub",
+      "source": "HN",
+      "url": "https://mitchellh.com/writing/ghostty-leaving-github",
+      "why": "3,083 pts; Mitchell Hashimoto (HashiCorp founder) says GitHub 'no longer works for serious work' — ecosystem shift signal",
+      "suggested_action": "read article; note if self-hosted forge is worth tracking for AgentStack infrastructure positioning"
+    },
+    {
+      "seen_at": "2026-04-29T10:45:00.000Z",
+      "ts": "2026-04-29T10:00:00.000Z",
+      "title": "Tangled – We need a federation of forges",
+      "source": "HN",
+      "url": "https://blog.tangled.org/federation/",
+      "why": "211 pts; decentralized git hosting gaining traction alongside the GitHub exodus — long-term platform risk signal",
+      "suggested_action": "drop a star, no action; revisit if GitHub exodus accelerates in next 30 days"
+    },
+    {
+      "seen_at": "2026-04-29T10:45:00.000Z",
+      "ts": "2026-04-29T10:00:00.000Z",
+      "title": "Zed is 1.0 — Rust-native AI-first editor hits stable",
+      "source": "HN",
+      "url": "https://zed.dev/blog/zed-1-0",
+      "why": "327 pts; Rust AI-first editor stable; direct competitor to Claude Code + VS Code stack Simon uses",
+      "suggested_action": "skim 1.0 release notes; evaluate if agentic editing features beat Claude Code CLI for any workflows"
+    },
+    {
+      "seen_at": "2026-04-29T10:45:00.000Z",
+      "ts": "2026-04-29T10:00:00.000Z",
+      "title": "Mistral Medium 3.5 — New Mistral model with remote agents",
+      "source": "HN",
+      "url": "https://mistral.ai/news/vibe-remote-agents-mistral-medium-3-5",
+      "why": "46 pts; new mid-tier model with agent support; potential cheaper alternative to Sonnet for batch tasks",
+      "suggested_action": "check pricing vs DeepSeek V4-Flash; if cheaper, add as alias in tools/deepseek.js or equivalent"
+    }
+  ]
+}

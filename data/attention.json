@@ -1,0 +1,43 @@
+{
+  "generated_at": "2026-04-29T10:31:00-05:00",
+  "window_days": 7,
+  "total_minutes": 355,
+  "categories": [
+    {
+      "name": "ops",
+      "minutes": 120,
+      "sessions": 15,
+      "top_topics": ["watchdog Windows shell fix", "cron audit + Telegram recovery", "syseng biweekly audit"]
+    },
+    {
+      "name": "coding",
+      "minutes": 95,
+      "sessions": 7,
+      "top_topics": ["simonlpaige site v2 pages", "Commonweave Wave B push", "OpenBrain capture script"]
+    },
+    {
+      "name": "writing",
+      "minutes": 65,
+      "sessions": 5,
+      "top_topics": ["labor-for-housing PDF v2", "RivalDrop + Anvilshare pitch docs", "Everyday Produce logo concepts"]
+    },
+    {
+      "name": "sales",
+      "minutes": 45,
+      "sessions": 5,
+      "top_topics": ["Brookside Party Warehouse close", "optometrist lead batch", "founding cohort outreach"]
+    },
+    {
+      "name": "research",
+      "minutes": 25,
+      "sessions": 2,
+      "top_topics": ["crypto arb four-model red-team", "AI scout sweep HN + GitHub"]
+    },
+    {
+      "name": "other",
+      "minutes": 5,
+      "sessions": 2,
+      "top_topics": ["general UI chat", "MCP server liveness check"]
+    }
+  ]
+}

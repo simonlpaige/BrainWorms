@@ -1,0 +1,24 @@
+{
+  "generated_at": "2026-04-29T10:31:00-05:00",
+  "summary": "No outreach-log.md or prospects.md files exist in the commonweave directory yet — outreach tracking has not been formally set up. Two prospects (London CLT, SF Community Land Trust) were noted in daily memory from April 25-26 but have no source file to pull from.",
+  "prospects": [
+    {
+      "name": "",
+      "role": "",
+      "org": "London Community Land Trust",
+      "email": "",
+      "last_touch": "2026-04-25",
+      "notes": "Wave 1 outreach sent April 25 per daily memory; no reply logged yet.",
+      "suggested_action": "Nudge window opens ~May 2; send a short follow-up if no reply by then."
+    },
+    {
+      "name": "",
+      "role": "",
+      "org": "SF Community Land Trust",
+      "email": "",
+      "last_touch": null,
+      "notes": "Wave 2 email was queued but not confirmed sent as of April 29.",
+      "suggested_action": "Confirm whether email was sent; if not, send or drop."
+    }
+  ]
+}

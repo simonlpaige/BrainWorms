@@ -1,0 +1,173 @@
+{
+  "generated_at": "2026-04-30T01:00:15Z",
+  "items": [
+    {
+      "category": "skill",
+      "title": "cloudflare-api",
+      "why": "Any task that needs to read or change Cloudflare state for Simon's domains (DNS, WAF, Workers, etc.)",
+      "url": null
+    },
+    {
+      "category": "skill",
+      "title": "find_or_build_capability",
+      "why": "Whenever a task requires functionality not already wired up — apply BEFORE asking the user for help.",
+      "url": null
+    },
+    {
+      "category": "builtin-tool",
+      "title": "shell",
+      "why": "Run bash/pwsh/cmd commands — scripts, process state, file listing, git/gh/npm/python/node CLIs.",
+      "url": null
+    },
+    {
+      "category": "builtin-tool",
+      "title": "read_file",
+      "why": "Read a UTF-8 text file by absolute or relative path.",
+      "url": null
+    },
+    {
+      "category": "builtin-tool",
+      "title": "write_file",
+      "why": "Write a UTF-8 text file; overwrite or append mode; restricted to allowed paths.",
+      "url": null
+    },
+    {
+      "category": "builtin-tool",
+      "title": "http_get",
+      "why": "GET a URL and return raw text body — for JSON APIs, RSS feeds, plain docs.",
+      "url": null
+    },
+    {
+      "category": "builtin-tool",
+      "title": "browser_fetch",
+      "why": "Fetch a web page and return reading-grade text (HTML stripped) — better than http_get for articles/docs.",
+      "url": null
+    },
+    {
+      "category": "builtin-tool",
+      "title": "browser_search",
+      "why": "Web search via Brave Search API — returns top organic results with title/url/description.",
+      "url": null
+    },
+    {
+      "category": "builtin-tool",
+      "title": "delegate_claude",
+      "why": "Spawn a Claude Code subagent for multi-file edits, test suites, or iterative coding tasks.",
+      "url": null
+    },
+    {
+      "category": "builtin-tool",
+      "title": "delegate_codex",
+      "why": "Spawn a Codex CLI subagent — alternative coding agent or second opinion when Claude Code is busy.",
+      "url": null
+    },
+    {
+      "category": "builtin-tool",
+      "title": "list_skills",
+      "why": "List all available skills (name + when_to_use) to discover loaded playbooks.",
+      "url": null
+    },
+    {
+      "category": "builtin-tool",
+      "title": "load_skill",
+      "why": "Return the full body of a named skill so Larry can follow its instructions.",
+      "url": null
+    },
+    {
+      "category": "script-tool",
+      "title": "web-search.js",
+      "why": "Multi-source web search (Brave > DDG > SearXNG) — returns top results as text or JSON.",
+      "url": null
+    },
+    {
+      "category": "script-tool",
+      "title": "deepseek.js",
+      "why": "DeepSeek V4 red-team / debias / deep reasoner — flash, pro, and pro-thinking variants with --critique gate.",
+      "url": null
+    },
+    {
+      "category": "script-tool",
+      "title": "puter-search.js",
+      "why": "Free Perplexity-style search via Puter — CREDITS EXHAUSTED, kept for reference.",
+      "url": null
+    },
+    {
+      "category": "script-tool",
+      "title": "screenshot_and_send.js",
+      "why": "Capture a screenshot of a URL and send it (used to verify live deploys).",
+      "url": null
+    },
+    {
+      "category": "script-tool",
+      "title": "telegram-send.js",
+      "why": "Cron-safe Telegram message sender — reads bot creds from encrypted vault, truncates at 4096 chars.",
+      "url": null
+    },
+    {
+      "category": "script-tool",
+      "title": "ollama-watchdog.js",
+      "why": "Check and auto-heal Ollama — status report, incident history, and crash pattern tracking.",
+      "url": null
+    },
+    {
+      "category": "script-tool",
+      "title": "openclaw-watchdog.js",
+      "why": "Check and auto-heal OpenClaw gateway — status report and crash pattern tracking.",
+      "url": null
+    },
+    {
+      "category": "script-tool",
+      "title": "deep-dive.js",
+      "why": "Dump an entire module's files into one long-context LLM turn for strategic reviews and cross-file synthesis.",
+      "url": null
+    },
+    {
+      "category": "script-tool",
+      "title": "triage-router.js",
+      "why": "Small-model (Qwen 2.5 2B) pre-filter for coin-flip / classifier / triage tasks before hitting Sonnet.",
+      "url": null
+    },
+    {
+      "category": "script-tool",
+      "title": "toon.js",
+      "why": "TOON encoder/decoder — compact JSON alternative for structured LLM payloads (claims 30-60% token reduction).",
+      "url": null
+    },
+    {
+      "category": "delegate",
+      "title": "claude",
+      "why": "Claude Code CLI (Max flat-rate) — default for ALL non-trivial coding: features, refactors, multi-file edits, reviews.",
+      "url": null
+    },
+    {
+      "category": "delegate",
+      "title": "codex",
+      "why": "Codex CLI — alternative coding agent when Claude Code is busy or a second opinion is needed (paid per use).",
+      "url": null
+    },
+    {
+      "category": "provider",
+      "title": "anthropic / claude-sonnet-4-6",
+      "why": "Primary provider — tool-calling support required for all agentic tasks; user-facing replies and orchestration.",
+      "url": null
+    },
+    {
+      "category": "provider",
+      "title": "openai / gpt-5.5",
+      "why": "Fallback provider — used when Anthropic is unavailable; no tool-calling in current Larry build.",
+      "url": null
+    },
+    {
+      "category": "provider",
+      "title": "deepseek / deepseek-chat",
+      "why": "Mandatory red-team/debias step for strategic research; V4 Pro is ~7x cheaper than Sonnet for batch reasoning.",
+      "url": null
+    },
+    {
+      "category": "provider",
+      "title": "ollama / qwen3.6:27b",
+      "why": "Free local inference on RTX 4060 Ti — routine execution, data transforms, classification, summarization.",
+      "url": null
+    }
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "_comment": "Each widget reads a JSON file from data/<id>.json. The file is produced by a Larry cron job (see ~/larry-rust/cron.toml). 'kind' selects the renderer.",
+  "widgets": [
+    {
+      "id": "attention",
+      "title": "Larry attention (last 7 days)",
+      "url": "data/attention.json",
+      "kind": "category-bars",
+      "refresh_s": 60,
+      "produced_by": "attention-rollup cron (daily 03:30 CT)"
+    },
+    {
+      "id": "ai-scout-rolling",
+      "title": "AI scout — top findings (last 3 days)",
+      "url": "data/ai-scout-rolling.json",
+      "kind": "feed",
+      "refresh_s": 60,
+      "produced_by": "ai-scout-sweep cron (08:00 + 20:00 CT)"
+    },
+    {
+      "id": "contact-list",
+      "title": "Next clients to contact, by business",
+      "url": "data/contact-list.json",
+      "kind": "contact-list",
+      "refresh_s": 60,
+      "produced_by": "contact-list-rollup cron (daily 06:00 CT)"
+    },
+    {
+      "id": "commonweave-outreach",
+      "title": "Commonweave outreach",
+      "url": "data/commonweave-outreach.json",
+      "kind": "outreach-detail",
+      "refresh_s": 60,
+      "produced_by": "commonweave-outreach cron (Tue/Fri 07:00 CT)"
+    },
+    {
+      "id": "ai-scout-archive",
+      "title": "AI scout archive (rolling 30d)",
+      "url": "data/ai-scout-archive.json",
+      "kind": "feed",
+      "refresh_s": 120,
+      "produced_by": "ai-scout-archive cron (10 mins after each sweep)"
+    },
+    {
+      "id": "scout-followups",
+      "title": "Scout followups (queued -> concrete actions)",
+      "url": "data/scout-followups.json",
+      "kind": "scout-followups",
+      "refresh_s": 120,
+      "produced_by": "scout-followups cron (daily 09:00 CT)"
+    },
+    {
+      "id": "topology",
+      "title": "WormHole topology (system map + learnings)",
+      "url": "data/topology.json",
+      "kind": "topology",
+      "refresh_s": 300,
+      "produced_by": "topology-snapshot cron (daily 05:00 CT)"
+    },
+    {
+      "id": "memory-map",
+      "title": "Memory map (long-term + dreaming)",
+      "url": "data/memory-map.json",
+      "kind": "memory-map",
+      "refresh_s": 300,
+      "produced_by": "memory-dreaming cron (nightly 04:00 CT)"
+    },
+    {
+      "id": "security",
+      "title": "Security findings (nightly)",
+      "url": "data/security.json",
+      "kind": "security",
+      "refresh_s": 300,
+      "produced_by": "nightly-security cron (nightly 03:00 CT)"
+    },
+    {
+      "id": "host-audit",
+      "title": "Host audit (Windows side)",
+      "url": "data/host-audit.json",
+      "kind": "host-audit",
+      "refresh_s": 300,
+      "produced_by": "weekly-host-audit cron (Sundays 04:00 CT)"
+    },
+    {
+      "id": "telegram-recent-sends",
+      "title": "Telegram recent sends (last 6h)",
+      "url": "data/telegram-recent-sends.json",
+      "kind": "feed",
+      "refresh_s": 120,
+      "produced_by": "telegram-recent-sends cron"
+    },
+    {
+      "id": "skills-tools-mcp",
+      "title": "Skills, tools & MCP inventory",
+      "url": "data/skills-tools-mcp.json",
+      "kind": "feed",
+      "refresh_s": 120,
+      "produced_by": "skills-tools-mcp cron"
+    }
+  ]
+}

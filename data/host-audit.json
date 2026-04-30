@@ -1,0 +1,85 @@
+{
+  "generated_at": "2026-04-29T11:51:30-05:00",
+  "disk": {
+    "drive": "C:",
+    "free_gb": 587.9,
+    "used_gb": 342.2,
+    "free_pct": 63.2
+  },
+  "directory_sizes": {
+    "/c/Users/simon/larry-rust/target": "460M",
+    "/c/Users/simon/larry-rust/sessions": "80K",
+    "/c/Users/simon/larry-rust/logs": "284K",
+    "/c/Users/simon/.openclaw/workspace": "211M",
+    "/c/tmp/openclaw": "19M"
+  },
+  "updates_pending": 29,
+  "auto_services_not_running": 2,
+  "event_warnings_24h": 20,
+  "larry_uptime_hours": 0.3,
+  "flags": [
+    {
+      "severity": "HIGH",
+      "category": "updates_pending",
+      "location": "winget",
+      "detail": "29 upgrades available including Python 3.13, .NET runtimes, GitHub Desktop, Microsoft Teams, App Installer, Jackett.",
+      "suggested_fix": "Run `winget upgrade --all` during off-hours; prioritise Microsoft.AppInstaller and Teams as security-adjacent."
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "event_spike",
+      "location": "System Event Log / Microsoft-Windows-TPM-WMI",
+      "detail": "11 TPM-WMI errors today: Secure Boot cert updates failing with -2147020471 (Windows UEFI CA 2023, KEK, Boot Manager, Option ROM).",
+      "suggested_fix": "Review https://go.microsoft.com/fwlink/?linkid=2169931 — usually resolved by a Windows Update + reboot cycle."
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "updates_pending",
+      "location": "winget / Python.Launcher + Python.Python.3.13 + Python.Python.3.14",
+      "detail": "Python Launcher (3.13.0→3.13.5), Python 3.13.0→3.13.13, Python 3.14.3→3.14.4 — runtime security patches pending.",
+      "suggested_fix": "Run `winget upgrade Python.Launcher Python.Python.3.13 Python.Python.3.14` to patch the Python runtimes."
+    },
+    {
+      "severity": "LOW",
+      "category": "service_failed",
+      "location": "service / Intel(R) Platform License Manager Service",
+      "detail": "Intel Platform License Manager is Automatic but not Running (Status=1/Stopped). Non-critical Intel management service.",
+      "suggested_fix": "Review in services.msc — safe to set StartType to Manual if it's not needed; reboot often fixes transient stops."
+    },
+    {
+      "severity": "LOW",
+      "category": "service_failed",
+      "location": "service / sppsvc (Software Protection)",
+      "detail": "Windows Software Protection Service is Automatic but not currently running. Normally demand-started by Windows.",
+      "suggested_fix": "This is demand-start by design; only flag if Windows Activation errors appear. No action needed now."
+    },
+    {
+      "severity": "LOW",
+      "category": "event_spike",
+      "location": "System Event Log / DCOM",
+      "detail": "5 DCOM 10016 permission errors logged. Common on Windows 11, usually harmless COM+ component permission mismatches.",
+      "suggested_fix": "Monitor for increase; if persistent, run `dcomcnfg` to review component launch permissions."
+    },
+    {
+      "severity": "LOW",
+      "category": "event_spike",
+      "location": "System Event Log / Netwtw14",
+      "detail": "3 Intel WiFi driver events (Netwtw14 EventID -2147477586) with missing registry description — likely WiFi reconnect events.",
+      "suggested_fix": "Update Intel WiFi driver via Device Manager or check winget for Intel driver packages."
+    },
+    {
+      "severity": "INFO",
+      "category": "info",
+      "location": "disk / larry-rust/target",
+      "detail": "Rust build artifacts at 460 MB. Normal for an active Rust project but will grow; periodic `cargo clean` recovers space.",
+      "suggested_fix": "Run `cargo clean` in /c/Users/simon/larry-rust if disk pressure ever appears; safe to do anytime."
+    },
+    {
+      "severity": "INFO",
+      "category": "resource_high",
+      "location": "process / larry (PID 22380)",
+      "detail": "Larry process uptime 0.3h, CPU 0.6s, RAM 17.8 MB. Very low resource use — freshly started this session.",
+      "suggested_fix": "All green. Check again after a full day of cron activity to baseline normal RAM."
+    }
+  ]
+}

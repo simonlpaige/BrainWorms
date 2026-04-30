@@ -1,0 +1,19 @@
+{
+  "items": {
+    "ai-scout-rolling|https://github.com/abhigyanpatwari/GitNexus": {
+      "source": "github-trending",
+      "state": "queue",
+      "title": "GitNexus",
+      "updated_at": "2026-04-29T11:01:19.275554800-05:00",
+      "widget_id": "ai-scout-rolling"
+    },
+    "ai-scout-rolling|https://github.com/warpdotdev/warp": {
+      "source": "github-trending",
+      "state": "queue",
+      "title": "warp",
+      "updated_at": "2026-04-29T11:01:18.830270500-05:00",
+      "widget_id": "ai-scout-rolling"
+    }
+  },
+  "updated_at": "2026-04-29T11:01:19.275554800-05:00"
+}

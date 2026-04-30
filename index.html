@@ -1,0 +1,944 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>WormHole · open-brain</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --bg: #0a0b0d; --fg: #d6d8dd; --muted: #8a8d94; --accent: #c8b780;
+    --border: #1d1f23; --card: #14161a; --ok: #6ec07e; --err: #d96b6b;
+    --warn: #d9c27a; --bar: #2a2d33;
+  }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--fg); font: 13px/1.55 ui-monospace, "JetBrains Mono", Consolas, monospace; min-height: 100vh; }
+  header { padding: 14px 22px; border-bottom: 1px solid var(--border); display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+  header .title { font-weight: 700; color: var(--accent); font-size: 16px; }
+  header .meta { color: var(--muted); font-size: 11px; }
+  .toolbar { padding: 10px 22px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; border-bottom: 1px solid var(--border); }
+  .toolbar input[type="text"] { flex: 1; min-width: 280px; background: #0a0b0c; color: var(--fg); border: 1px solid var(--border); border-radius: 4px; padding: 6px 10px; font: inherit; }
+  .toolbar button { background: #1d1f23; border: 1px solid #2a2d33; color: var(--fg); padding: 6px 12px; border-radius: 4px; cursor: pointer; font: inherit; }
+  .toolbar button:hover { border-color: var(--accent); color: var(--accent); }
+  .toolbar .small { color: var(--muted); font-size: 11px; }
+  .auth-banner { background: #2a1d1d; color: var(--err); padding: 10px 22px; border-bottom: 1px solid var(--err); font-size: 12px; display: none; }
+  .auth-banner.show { display: block; }
+  .auth-banner code { background: #1a0d0d; padding: 1px 5px; border-radius: 3px; }
+  .canvas { position: relative; padding: 12px; min-height: calc(100vh - 130px); }
+  .panel {
+    position: absolute;
+    border: 1px solid var(--border);
+    border-left-width: 4px;
+    background: var(--card);
+    border-radius: 6px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-width: 200px;
+    min-height: 100px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+  }
+  .panel.dragging { opacity: 0.85; cursor: move; box-shadow: 0 8px 22px rgba(0,0,0,0.6); z-index: 999; }
+  .panel-head {
+    cursor: move;
+    user-select: none;
+    padding: 8px 10px 6px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+    background: linear-gradient(to bottom, #181a1f, var(--card));
+  }
+  .panel-head h3 { margin: 0; font-size: 13px; color: var(--accent); }
+  .panel-head .sub { color: var(--muted); font-size: 10px; }
+  .panel-head .ctrls { display: flex; gap: 4px; opacity: 0.5; transition: opacity 120ms; }
+  .panel:hover .panel-head .ctrls { opacity: 1; }
+  .panel-head .ctrls button { background: transparent; border: 1px solid transparent; color: var(--muted); padding: 1px 6px; border-radius: 3px; cursor: pointer; font: inherit; font-size: 11px; }
+  .panel-head .ctrls button:hover { border-color: var(--border); color: var(--accent); }
+  .panel-body { flex: 1; overflow: auto; padding: 10px 12px; }
+  .resize-handle {
+    position: absolute;
+    right: 0; bottom: 0;
+    width: 14px; height: 14px;
+    cursor: nwse-resize;
+    background:
+      linear-gradient(135deg, transparent 0 6px, var(--muted) 6px 7px, transparent 7px 9px, var(--muted) 9px 10px, transparent 10px 14px);
+    opacity: 0.5;
+  }
+  .resize-handle:hover { opacity: 1; }
+  .url, .small { color: var(--muted); font-size: 11px; }
+  .row2 { display: grid; grid-template-columns: auto 1fr; column-gap: 14px; row-gap: 4px; margin-top: 10px; font-size: 12px; }
+  .row2 dt { color: var(--muted); }
+  .row2 dd { margin: 0; }
+  .pill { display: inline-block; padding: 1px 7px; border-radius: 3px; border: 1px solid var(--border); font-size: 11px; }
+  .pill.ok { color: var(--ok); border-color: var(--ok); }
+  .pill.err { color: var(--err); border-color: var(--err); }
+  .pill.warn { color: var(--warn); border-color: var(--warn); }
+  .err-box { color: var(--err); font-size: 11px; margin-top: 8px; word-break: break-all; }
+  .skill, .prov { display: inline-block; padding: 1px 6px; margin: 1px 3px 1px 0; background: #1a1c20; border-radius: 3px; font-size: 11px; color: var(--accent); }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  /* widgets */
+  .bar-row { display: grid; grid-template-columns: 110px 1fr auto; column-gap: 10px; align-items: center; padding: 3px 0; font-size: 12px; }
+  .bar-row .name { color: var(--accent); }
+  .bar { height: 10px; background: var(--bar); border-radius: 2px; overflow: hidden; }
+  .bar > .fill { height: 100%; background: var(--accent); }
+  .bar-row .val { color: var(--muted); font-size: 11px; min-width: 60px; text-align: right; }
+  .feed-item { padding: 8px 0; border-top: 1px solid var(--border); display: grid; grid-template-columns: 38px 1fr; column-gap: 10px; }
+  .feed-item:first-child { border-top: 0; }
+  .feed-item.done .feed-body { opacity: 0.5; text-decoration: line-through; }
+  .feed-item.queued .feed-body { color: var(--accent); }
+  .feed-ctrls { display: flex; flex-direction: column; gap: 3px; padding-top: 2px; }
+  .feed-ctrls button { font: 11px ui-monospace, Consolas, monospace; padding: 1px 4px; min-width: 22px; cursor: pointer; background: #1a1c20; color: var(--muted); border: 1px solid var(--border); border-radius: 3px; }
+  .feed-ctrls button:hover { color: var(--accent); border-color: var(--accent); }
+  .feed-ctrls button.on { background: var(--accent); color: #000; border-color: var(--accent); }
+  .feed-item .head { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+  .feed-item .src { color: var(--muted); font-size: 11px; }
+  .feed-item .why { color: var(--fg); font-size: 12px; margin-top: 2px; }
+  .feed-item .action { color: var(--ok); font-size: 12px; margin-top: 2px; }
+  .biz-block { padding: 8px 0; border-top: 1px solid var(--border); }
+  .biz-block:first-child { border-top: 0; }
+  .biz-block h4 { margin: 0 0 6px; font-size: 13px; color: var(--accent); }
+  .prospect { display: grid; grid-template-columns: 1fr auto; gap: 6px; padding: 3px 0; font-size: 12px; }
+  .prospect .meta { color: var(--muted); font-size: 11px; }
+  .badge { font-size: 10px; padding: 1px 6px; border-radius: 3px; border: 1px solid var(--border); color: var(--muted); }
+  .badge.cold { color: var(--err); border-color: var(--err); }
+  .badge.warm { color: var(--warn); border-color: var(--warn); }
+  .badge.hot { color: var(--ok); border-color: var(--ok); }
+</style>
+</head>
+<body>
+<header>
+  <div class="title">🪱 WormHole <span style="color:var(--muted); font-weight:400; margin-left:6px">· open-brain</span></div>
+  <div class="meta" id="meta">loading…</div>
+</header>
+<div class="auth-banner" id="authBanner"></div>
+<div class="toolbar">
+  <input id="newWidgetInput" type="text" placeholder='describe a new widget (e.g. "telegram messages I sent today vs yesterday")'>
+  <button id="newWidgetBtn">+ widget</button>
+  <button id="reloadCron" title="re-read cron.toml + cron.d/">↻ cron</button>
+  <button id="resetLayout" title="reset all panel positions">reset layout</button>
+  <button id="setToken" title="set the Larry UI auth token">🔑 token</button>
+  <span class="small" id="creatorStatus"></span>
+</div>
+<div class="canvas" id="canvas"></div>
+<script>
+'use strict';
+
+const LARRY_BASE = 'http://127.0.0.1:18790';
+const LAYOUT_KEY = 'openbrain_layout_v2';
+const TOKEN_KEY = 'larry_token';
+
+function getToken() { return localStorage.getItem(TOKEN_KEY) || ''; }
+function setToken(t) {
+  if (t) localStorage.setItem(TOKEN_KEY, t);
+  else localStorage.removeItem(TOKEN_KEY);
+}
+function authHeaders() {
+  const t = getToken();
+  return t ? { 'authorization': 'Bearer ' + t } : {};
+}
+function showAuthBanner(msg) {
+  const b = document.getElementById('authBanner');
+  if (!b) return;
+  if (msg) {
+    b.textContent = msg;
+    b.classList.add('show');
+  } else {
+    b.classList.remove('show');
+  }
+}
+
+function clear(n) { while (n.firstChild) n.removeChild(n.firstChild); }
+function el(tag, attrs, kids) {
+  const e = document.createElement(tag);
+  if (attrs) for (const k of Object.keys(attrs)) {
+    const v = attrs[k];
+    if (v === null || v === undefined) continue;
+    if (k === 'class') e.className = v;
+    else if (k === 'text') e.textContent = v;
+    else if (k.startsWith('on')) e[k] = v;
+    else e.setAttribute(k, v);
+  }
+  if (kids) {
+    if (!Array.isArray(kids)) kids = [kids];
+    for (const k of kids) {
+      if (k === null || k === undefined) continue;
+      e.appendChild(typeof k === 'string' ? document.createTextNode(k) : k);
+    }
+  }
+  return e;
+}
+function fmtAge(iso) {
+  if (!iso) return '';
+  const t = new Date(iso).getTime();
+  if (!isFinite(t)) return iso;
+  const sec = Math.max(0, Math.floor((Date.now() - t) / 1000));
+  if (sec < 60) return sec + 's ago';
+  if (sec < 3600) return Math.floor(sec/60) + 'm ago';
+  if (sec < 86400) return Math.floor(sec/3600) + 'h ago';
+  return Math.floor(sec/86400) + 'd ago';
+}
+
+// ---------- layout persistence ----------
+function loadLayout() {
+  try { return JSON.parse(localStorage.getItem(LAYOUT_KEY) || '{}'); }
+  catch (e) { return {}; }
+}
+function saveLayout(l) { localStorage.setItem(LAYOUT_KEY, JSON.stringify(l)); }
+
+// Scout actions are kept server-side (Larry can read them), but cached in memory
+// here so renders don't block on the network.
+let scoutActions = {}; // { item_id: { state, updated_at, ... } }
+async function loadScoutActions() {
+  try {
+    const r = await fetch(LARRY_BASE + '/api/scout/actions', { cache: 'no-store', headers: authHeaders() });
+    if (r.status === 401) { showAuthBanner('Larry token missing or invalid. Click 🔑 token in the toolbar to set it. (Telegram message from Larry has the value.)'); return; }
+    showAuthBanner('');
+    if (!r.ok) return;
+    const j = await r.json();
+    scoutActions = (j && j.items) || {};
+  } catch (e) { /* leave whatever we had cached */ }
+}
+async function postScoutAction(itemId, state, extras) {
+  const body = Object.assign({ item_id: itemId, state: state }, extras || {});
+  try {
+    const r = await fetch(LARRY_BASE + '/api/scout/action', {
+      method: 'POST',
+      headers: Object.assign({ 'content-type': 'application/json' }, authHeaders()),
+      body: JSON.stringify(body),
+    });
+    if (r.status === 401) showAuthBanner('Larry rejected token; click 🔑 token to fix.');
+    return r.ok;
+  } catch (e) { return false; }
+}
+function scoutItemId(item, widgetId) {
+  return widgetId + '|' + (item.url || (item.title || '?'));
+}
+function scoutStateFor(item, widgetId) {
+  const e = scoutActions[scoutItemId(item, widgetId)];
+  return e && e.state || null;
+}
+
+// ---------- state ----------
+let nodes = [];
+let widgets = [];
+let lastFetch = {};
+let widgetData = {};
+let layout = loadLayout();
+
+async function loadConfig() {
+  try { nodes = ((await (await fetch('./nodes.json', { cache: 'no-store' })).json()).nodes || []).filter(n => n && n.id && n.base_url); }
+  catch (e) { nodes = []; }
+  try { widgets = ((await (await fetch('./widgets.json?t=' + Date.now(), { cache: 'no-store' })).json()).widgets || []).filter(w => w && w.id && w.url); }
+  catch (e) { widgets = []; }
+}
+
+async function pollNode(node) {
+  const t0 = performance.now();
+  // Per-node token from nodes.json wins; fall back to the shared local token
+  // (e.g. Larry-the-node uses the same token the dashboard uses for its
+  // /api/scout/* calls). This avoids configuring the token twice.
+  const tok = node.token || (node.kind === 'larry' ? getToken() : '');
+  const headers = tok ? { 'authorization': 'Bearer ' + tok } : undefined;
+  try {
+    const r = await fetch(node.base_url.replace(/\/$/, '') + '/api/status', { headers, cache: 'no-store' });
+    const status = await r.json();
+    lastFetch[node.id] = { ok: r.ok, status, error: null, latency_ms: Math.round(performance.now() - t0) };
+  } catch (e) {
+    lastFetch[node.id] = { ok: false, status: null, error: String(e), latency_ms: Math.round(performance.now() - t0) };
+  }
+}
+async function pollWidget(w) {
+  try {
+    const r = await fetch(w.url + '?t=' + Date.now(), { cache: 'no-store' });
+    if (!r.ok) { widgetData[w.id] = { missing: true, status: r.status }; return; }
+    widgetData[w.id] = await r.json();
+  } catch (e) { widgetData[w.id] = { missing: true, error: String(e) }; }
+}
+
+// ---------- panel layout ----------
+
+function defaultLayoutFor(panelId, idx, totalCols) {
+  // Special-case the topology panel — it's an SVG map and wants a much
+  // bigger canvas by default. Drop it as the first wide panel at the top.
+  if (panelId === 'widget:topology') {
+    return { x: 12, y: 12, w: 980, h: 760 };
+  }
+  const W = 460, H = 320, GAP = 14;
+  const col = idx % totalCols, row = Math.floor(idx / totalCols);
+  return { x: 12 + col * (W + GAP), y: 12 + row * (H + GAP), w: W, h: H };
+}
+
+function applyLayout(panel, l) {
+  panel.style.left = l.x + 'px';
+  panel.style.top = l.y + 'px';
+  panel.style.width = l.w + 'px';
+  panel.style.height = l.h + 'px';
+}
+
+function makeDraggable(panel, head, panelId) {
+  let startX, startY, origLeft, origTop;
+  function down(ev) {
+    if (ev.target.tagName === 'BUTTON' || ev.target.tagName === 'A') return;
+    ev.preventDefault();
+    panel.classList.add('dragging');
+    startX = ev.clientX; startY = ev.clientY;
+    origLeft = parseInt(panel.style.left || '0', 10);
+    origTop = parseInt(panel.style.top || '0', 10);
+    document.addEventListener('mousemove', move);
+    document.addEventListener('mouseup', up);
+  }
+  function move(ev) {
+    panel.style.left = (origLeft + ev.clientX - startX) + 'px';
+    panel.style.top = Math.max(0, origTop + ev.clientY - startY) + 'px';
+  }
+  function up() {
+    panel.classList.remove('dragging');
+    document.removeEventListener('mousemove', move);
+    document.removeEventListener('mouseup', up);
+    layout[panelId] = { x: parseInt(panel.style.left, 10), y: parseInt(panel.style.top, 10), w: parseInt(panel.style.width, 10), h: parseInt(panel.style.height, 10) };
+    saveLayout(layout);
+  }
+  head.addEventListener('mousedown', down);
+}
+
+function makeResizable(panel, handle, panelId) {
+  let startX, startY, origW, origH;
+  function down(ev) {
+    ev.preventDefault();
+    ev.stopPropagation();
+    startX = ev.clientX; startY = ev.clientY;
+    origW = parseInt(panel.style.width, 10);
+    origH = parseInt(panel.style.height, 10);
+    document.addEventListener('mousemove', move);
+    document.addEventListener('mouseup', up);
+  }
+  function move(ev) {
+    panel.style.width = Math.max(200, origW + ev.clientX - startX) + 'px';
+    panel.style.height = Math.max(100, origH + ev.clientY - startY) + 'px';
+  }
+  function up() {
+    document.removeEventListener('mousemove', move);
+    document.removeEventListener('mouseup', up);
+    layout[panelId] = { x: parseInt(panel.style.left, 10), y: parseInt(panel.style.top, 10), w: parseInt(panel.style.width, 10), h: parseInt(panel.style.height, 10) };
+    saveLayout(layout);
+  }
+  handle.addEventListener('mousedown', down);
+}
+
+function buildPanel(panelId, color, title, sub, bodyEl) {
+  const panel = el('div', { class: 'panel', id: 'p-' + panelId, style: 'border-left-color: ' + (color || '#888') });
+  const head = el('div', { class: 'panel-head' });
+  const titleSide = el('div');
+  titleSide.appendChild(el('h3', { text: title }));
+  if (sub) titleSide.appendChild(el('div', { class: 'sub', text: sub }));
+  head.appendChild(titleSide);
+  const ctrls = el('div', { class: 'ctrls' });
+  ctrls.appendChild(el('button', {
+    title: 'reset position', onclick: function (e) { e.stopPropagation(); delete layout[panelId]; saveLayout(layout); render(); }
+  }, '⎘'));
+  head.appendChild(ctrls);
+  panel.appendChild(head);
+  const body = el('div', { class: 'panel-body' });
+  body.appendChild(bodyEl);
+  panel.appendChild(body);
+  const handle = el('div', { class: 'resize-handle' });
+  panel.appendChild(handle);
+  makeDraggable(panel, head, panelId);
+  makeResizable(panel, handle, panelId);
+  return panel;
+}
+
+// ---------- node renderer ----------
+function bodyForNode(node) {
+  const f = lastFetch[node.id];
+  const wrap = el('div');
+  if (!f) { wrap.appendChild(el('div', { class: 'small', text: 'never polled' })); return wrap; }
+  if (!f.ok) {
+    wrap.appendChild(el('div', null, [el('span', { class: 'pill err', text: 'down' }), ' ', el('span', { class: 'small', text: f.latency_ms + 'ms' })]));
+    if (f.error) wrap.appendChild(el('div', { class: 'err-box', text: f.error }));
+    return wrap;
+  }
+  const s = f.status || {};
+  wrap.appendChild(el('div', { style: 'display:flex; gap:8px; align-items:center; flex-wrap:wrap' }, [
+    el('span', { class: 'pill ok', text: 'up' }),
+    el('span', { class: 'small', text: f.latency_ms + 'ms' }),
+    s.version ? el('span', { class: 'pill', text: 'v' + s.version }) : null,
+    typeof s.tools_enabled === 'boolean' ? el('span', { class: 'pill ' + (s.tools_enabled ? 'ok' : 'warn'), text: 'tools ' + (s.tools_enabled ? 'on' : 'off') }) : null,
+    typeof s.telegram === 'boolean' ? el('span', { class: 'pill ' + (s.telegram ? 'ok' : 'warn'), text: 'tg ' + (s.telegram ? 'on' : 'off') }) : null,
+    typeof s.cron_job_count === 'number' ? el('span', { class: 'pill', text: s.cron_job_count + ' crons' }) : null,
+  ]));
+  const dl = el('dl', { class: 'row2' });
+  function add(label, value) {
+    if (value === null || value === undefined) return;
+    dl.appendChild(el('dt', { text: label }));
+    if (typeof value === 'string') dl.appendChild(el('dd', { text: value }));
+    else dl.appendChild(el('dd', null, value));
+  }
+  if (Array.isArray(s.providers)) add('providers', s.providers.map(p => el('span', { class: 'prov', text: p })));
+  if (s.default_provider) add('default', s.default_provider);
+  if (Array.isArray(s.skills) && s.skills.length) add('skills', s.skills.map(p => el('span', { class: 'skill', text: p })));
+  if (s.larry_home) add('home', s.larry_home);
+  if (s.workspace_root) add('ws', s.workspace_root);
+  wrap.appendChild(dl);
+  return wrap;
+}
+
+// ---------- widget renderers ----------
+function renderMissing(w, data) {
+  const wrap = el('div');
+  wrap.appendChild(el('div', { class: 'small', text: 'no data yet — produced by ' + (w.produced_by || 'a Larry cron') }));
+  if (data && data.error) wrap.appendChild(el('div', { class: 'err-box', text: data.error }));
+  return wrap;
+}
+function renderCategoryBars(data) {
+  const cats = (data.categories || []).slice();
+  if (!cats.length) return el('div', { class: 'small', text: 'no categories yet' });
+  const max = Math.max.apply(null, cats.map(c => c.minutes || 0).concat([1]));
+  const wrap = el('div');
+  wrap.appendChild(el('div', { class: 'small', text: (data.total_minutes || 0) + ' min · ' + cats.length + ' categories · ' + (data.window_days || 7) + 'd · ' + fmtAge(data.generated_at) }));
+  cats.forEach(c => {
+    const pct = Math.round(((c.minutes || 0) / max) * 100);
+    const bar = el('div', { class: 'bar' }, [el('div', { class: 'fill', style: 'width: ' + pct + '%' })]);
+    wrap.appendChild(el('div', { class: 'bar-row' }, [
+      el('span', { class: 'name', text: c.name || 'unknown' }),
+      bar,
+      el('span', { class: 'val', text: (c.minutes || 0) + 'm · ' + (c.sessions || 0) }),
+    ]));
+    if (c.top_topics && c.top_topics.length) {
+      wrap.appendChild(el('div', { class: 'small', style: 'margin-left:120px', text: c.top_topics.join(', ') }));
+    }
+  });
+  return wrap;
+}
+function renderFeed(data, widgetId) {
+  const items = (data.items || []).slice();
+  if (!items.length) return el('div', { class: 'small', text: 'no items yet' });
+  const doneCount = items.reduce((n, it) => n + (scoutStateFor(it, widgetId) === 'done' ? 1 : 0), 0);
+  const queueCount = items.reduce((n, it) => n + (scoutStateFor(it, widgetId) === 'queue' ? 1 : 0), 0);
+  const wrap = el('div');
+  wrap.appendChild(el('div', { class: 'small', text:
+    items.length + ' items · ' + fmtAge(data.generated_at) +
+    (doneCount ? ' · ' + doneCount + ' done' : '') +
+    (queueCount ? ' · ' + queueCount + ' queued' : '')
+  }));
+  items.forEach(it => {
+    const id = scoutItemId(it, widgetId);
+    const state = scoutStateFor(it, widgetId);
+    const item = el('div', { class: 'feed-item' + (state === 'done' ? ' done' : '') + (state === 'queue' ? ' queued' : '') });
+
+    // Three-way action group: queue / done / clear
+    const ctrls = el('div', { class: 'feed-ctrls' });
+    function btn(label, target, title) {
+      const b = el('button', { class: state === target ? 'on' : '', title: title, onclick: async function (ev) {
+        ev.preventDefault();
+        b.disabled = true;
+        const newState = (state === target) ? 'clear' : target;
+        const ok = await postScoutAction(id, newState, {
+          title: it.title || '',
+          source: it.source || '',
+          widget_id: widgetId,
+        });
+        if (ok) await loadScoutActions();
+        render();
+      }, text: label });
+      return b;
+    }
+    ctrls.appendChild(btn('Q', 'queue', 'queue for follow-up (Larry will see this)'));
+    ctrls.appendChild(btn('✓', 'done', 'mark done'));
+
+    const body = el('div', { class: 'feed-body' });
+    const title = it.url
+      ? el('a', { href: it.url, target: '_blank', text: it.title || '(untitled)' })
+      : el('span', { text: it.title || '(untitled)' });
+    body.appendChild(el('div', { class: 'head' }, [
+      title,
+      el('span', { class: 'src', text: (it.source || '') + (it.ts ? ' · ' + fmtAge(it.ts) : '') }),
+    ]));
+    if (it.why) body.appendChild(el('div', { class: 'why', text: it.why }));
+    if (it.suggested_action) body.appendChild(el('div', { class: 'action', text: '→ ' + it.suggested_action }));
+    item.appendChild(ctrls);
+    item.appendChild(body);
+    wrap.appendChild(item);
+  });
+  return wrap;
+}
+function renderContactList(data) {
+  const businesses = (data.businesses || []).slice();
+  if (!businesses.length) return el('div', { class: 'small', text: 'no businesses populated yet' });
+  const wrap = el('div');
+  wrap.appendChild(el('div', { class: 'small', text: fmtAge(data.generated_at) }));
+  businesses.forEach(b => {
+    const block = el('div', { class: 'biz-block' });
+    block.appendChild(el('h4', { text: b.name || 'unknown' }));
+    if (!b.prospects || !b.prospects.length) { block.appendChild(el('div', { class: 'small', text: 'no candidates' })); }
+    else b.prospects.forEach(p => {
+      const heat = p.heat || 'cold';
+      block.appendChild(el('div', { class: 'prospect' }, [
+        el('div', null, [
+          el('span', { text: p.name || '(?)' }),
+          ' ',
+          el('span', { class: 'badge ' + heat, text: heat }),
+        ]),
+        el('span', { class: 'meta', text: (p.last_touch ? fmtAge(p.last_touch) : '—') }),
+      ]));
+      if (p.suggested_action) block.appendChild(el('div', { class: 'small', text: '→ ' + p.suggested_action }));
+    });
+    wrap.appendChild(block);
+  });
+  return wrap;
+}
+function renderScoutFollowups(data, widgetId) {
+  const items = (data.items || []).slice();
+  if (!items.length) return el('div', { class: 'small', text: 'no queued items yet — mark some scout items with Q to seed' });
+  const wrap = el('div');
+  wrap.appendChild(el('div', { class: 'small', text: items.length + ' followups · ' + fmtAge(data.generated_at) }));
+  items.forEach(it => {
+    const id = scoutItemId({ url: it.source_item_id || it.source_url || it.title, title: it.title }, widgetId);
+    const state = scoutStateFor({ url: it.source_item_id || it.source_url || it.title, title: it.title }, widgetId);
+    const block = el('div', { class: 'feed-item' + (state === 'done' ? ' done' : '') + (state === 'queue' ? ' queued' : '') });
+    const ctrls = el('div', { class: 'feed-ctrls' });
+    function btn(label, target, title) {
+      const b = el('button', { class: state === target ? 'on' : '', title: title, onclick: async function (ev) {
+        ev.preventDefault();
+        b.disabled = true;
+        const newState = (state === target) ? 'clear' : target;
+        const ok = await postScoutAction(id, newState, { title: it.title || '', source: 'scout-followups', widget_id: widgetId });
+        if (ok) await loadScoutActions();
+        render();
+      }, text: label });
+      return b;
+    }
+    ctrls.appendChild(btn('✓', 'done', 'mark followup done'));
+    block.appendChild(ctrls);
+    const body = el('div', { class: 'feed-body' });
+    body.appendChild(el('div', { class: 'head' }, [
+      el('span', { text: it.title || '(?)' }),
+      el('span', { class: 'pill', text: it.action_type || 'task' }),
+      el('span', { class: 'small', text: (it.est_effort_minutes ? it.est_effort_minutes + 'm' : '') }),
+    ]));
+    if (it.source_title) body.appendChild(el('div', { class: 'src small', text: 'from: ' + it.source_title + (it.source_url ? ' · ' + it.source_url : '') }));
+    if (it.body) body.appendChild(el('div', { class: 'why', text: it.body }));
+    if (it.prerequisites && it.prerequisites.length) body.appendChild(el('div', { class: 'small', text: 'prereqs: ' + it.prerequisites.join(', ') }));
+    if (it.first_step) body.appendChild(el('div', { class: 'action', text: '→ first step: ' + it.first_step }));
+    block.appendChild(body);
+    wrap.appendChild(block);
+  });
+  return wrap;
+}
+
+// ---------- topology (SVG system map) ----------
+const TOPOLOGY_GROUP_COLORS = {
+  channels: '#7a9bd9',
+  brain: '#c8b780',
+  providers: '#8db47a',
+  tools: '#b48d7a',
+  skills: '#9d7ad9',
+  storage: '#7ad9b4',
+  automations: '#d97a8d',
+  host: '#d9b47a',
+};
+function renderTopology(data) {
+  const wrap = el('div');
+  const nodes = (data.nodes || []).slice();
+  const edges = (data.edges || []).slice();
+  if (!nodes.length) return el('div', { class: 'small', text: 'no topology yet — produced by topology-snapshot cron (daily 05:00 CT)' });
+
+  wrap.appendChild(el('div', { class: 'small', text: nodes.length + ' nodes · ' + edges.length + ' edges · ' + fmtAge(data.generated_at) }));
+
+  const W = 1000, H = 720;
+  const ns = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(ns, 'svg');
+  svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+  svg.setAttribute('width', '100%');
+  svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+  svg.style.background = '#0a0b0c';
+  svg.style.borderRadius = '4px';
+  svg.style.marginTop = '6px';
+
+  // marker for arrowheads
+  const defs = document.createElementNS(ns, 'defs');
+  const marker = document.createElementNS(ns, 'marker');
+  marker.setAttribute('id', 'arrow');
+  marker.setAttribute('viewBox', '0 0 10 10');
+  marker.setAttribute('refX', '8');
+  marker.setAttribute('refY', '5');
+  marker.setAttribute('markerWidth', '6');
+  marker.setAttribute('markerHeight', '6');
+  marker.setAttribute('orient', 'auto-start-reverse');
+  const path = document.createElementNS(ns, 'path');
+  path.setAttribute('d', 'M 0 0 L 10 5 L 0 10 z');
+  path.setAttribute('fill', '#3a3d43');
+  marker.appendChild(path);
+  defs.appendChild(marker);
+  svg.appendChild(defs);
+
+  // index nodes by id
+  const nodeById = {};
+  nodes.forEach(n => { nodeById[n.id] = n; });
+
+  // edges first (so nodes draw on top)
+  edges.forEach(e => {
+    const a = nodeById[e.from]; const b = nodeById[e.to];
+    if (!a || !b) return;
+    const line = document.createElementNS(ns, 'line');
+    line.setAttribute('x1', a.x); line.setAttribute('y1', a.y);
+    line.setAttribute('x2', b.x); line.setAttribute('y2', b.y);
+    line.setAttribute('stroke', '#26282d');
+    line.setAttribute('stroke-width', '1.2');
+    line.setAttribute('marker-end', 'url(#arrow)');
+    svg.appendChild(line);
+  });
+
+  // nodes
+  nodes.forEach(n => {
+    const color = TOPOLOGY_GROUP_COLORS[n.group] || '#888';
+    const g = document.createElementNS(ns, 'g');
+    g.setAttribute('class', 'topo-node');
+    g.style.cursor = 'help';
+    const circle = document.createElementNS(ns, 'circle');
+    circle.setAttribute('cx', n.x); circle.setAttribute('cy', n.y);
+    const r = (n.id === 'brain') ? 32 : 14;
+    circle.setAttribute('r', r);
+    circle.setAttribute('fill', color);
+    circle.setAttribute('fill-opacity', '0.14');
+    circle.setAttribute('stroke', color);
+    circle.setAttribute('stroke-width', n.id === 'brain' ? '2' : '1.4');
+    g.appendChild(circle);
+    const label = document.createElementNS(ns, 'text');
+    label.setAttribute('x', n.x);
+    label.setAttribute('y', n.y + r + 13);
+    label.setAttribute('text-anchor', 'middle');
+    label.setAttribute('fill', '#d6d8dd');
+    label.setAttribute('font-size', n.id === 'brain' ? '14' : '11');
+    label.setAttribute('font-family', 'ui-monospace, Consolas, monospace');
+    label.textContent = n.label || n.id;
+    g.appendChild(label);
+    const title = document.createElementNS(ns, 'title');
+    title.textContent = (n.label || n.id) + (n.learning ? '\n\n' + n.learning : '');
+    g.appendChild(title);
+    svg.appendChild(g);
+  });
+
+  wrap.appendChild(svg);
+
+  // Group legend
+  const legend = el('div', { class: 'small', style: 'margin-top:8px; display:flex; flex-wrap:wrap; gap:8px' });
+  Object.keys(TOPOLOGY_GROUP_COLORS).forEach(g => {
+    const dot = el('span', { style: 'display:inline-block; width:8px; height:8px; border-radius:50%; background:' + TOPOLOGY_GROUP_COLORS[g] + '; margin-right:4px' });
+    legend.appendChild(el('span', null, [dot, g]));
+  });
+  wrap.appendChild(legend);
+
+  // Per-node "learning" list (so the user can read all annotations without hovering)
+  const learnedNodes = nodes.filter(n => n.learning && n.learning !== '(no signal yet)');
+  if (learnedNodes.length) {
+    wrap.appendChild(el('h4', { style: 'margin: 12px 0 6px; font-size: 12px; color: var(--muted); letter-spacing: 0.06em', text: 'WHAT THE BRAIN IS LEARNING' }));
+    learnedNodes.forEach(n => {
+      const row = el('div', { class: 'small', style: 'padding: 2px 0' });
+      row.appendChild(el('span', { style: 'color:' + (TOPOLOGY_GROUP_COLORS[n.group] || '#aaa'), text: (n.label || n.id) + ': ' }));
+      row.appendChild(document.createTextNode(n.learning));
+      wrap.appendChild(row);
+    });
+  }
+  return wrap;
+}
+
+// ---------- memory-map ----------
+function renderMemoryMap(data) {
+  const wrap = el('div');
+  if (!data.generated_at) return el('div', { class: 'small', text: 'no memory snapshot yet — produced by memory-dreaming cron (nightly 04:00 CT)' });
+  wrap.appendChild(el('div', { class: 'small', text: 'snapshot: ' + fmtAge(data.generated_at) }));
+
+  const tiles = el('div', { style: 'display:grid; grid-template-columns:repeat(2, 1fr); gap:8px; margin-top:8px' });
+  function tile(label, value, sub) {
+    const t = el('div', { style: 'background:#0d0f12; border:1px solid var(--border); border-radius:4px; padding:8px 10px' });
+    t.appendChild(el('div', { class: 'small', text: label }));
+    t.appendChild(el('div', { style: 'font-size:18px; color:var(--accent); margin-top:2px', text: value }));
+    if (sub) t.appendChild(el('div', { class: 'small', text: sub }));
+    return t;
+  }
+  tiles.appendChild(tile('long-term (MEMORY.md)', (data.longterm_lines || 0) + ' lines', (data.longterm_chars || 0) + ' chars'));
+  tiles.appendChild(tile('proposed by dreaming', (data.proposed_count || 0) + '', 'review at MEMORY-proposed.md'));
+  wrap.appendChild(tiles);
+
+  if (data.categories) {
+    wrap.appendChild(el('h4', { style: 'margin:10px 0 4px; font-size:12px; color:var(--muted)', text: 'PROPOSED INSIGHTS BY CATEGORY' }));
+    Object.entries(data.categories).forEach(([k, v]) => {
+      wrap.appendChild(el('div', { class: 'bar-row' }, [
+        el('span', { class: 'name', text: k }),
+        el('div', { class: 'bar' }, [el('div', { class: 'fill', style: 'width:' + Math.min(100, (v || 0) * 14) + '%' })]),
+        el('span', { class: 'val', text: v + '' }),
+      ]));
+    });
+  }
+
+  if (data.daily_files && data.daily_files.length) {
+    wrap.appendChild(el('h4', { style: 'margin:10px 0 4px; font-size:12px; color:var(--muted)', text: 'DAILY JOURNAL ACTIVITY (last 7d)' }));
+    const max = Math.max.apply(null, data.daily_files.map(d => d.lines || 0).concat([1]));
+    data.daily_files.forEach(d => {
+      wrap.appendChild(el('div', { class: 'bar-row' }, [
+        el('span', { class: 'name', text: d.date }),
+        el('div', { class: 'bar' }, [el('div', { class: 'fill', style: 'width:' + Math.round(((d.lines || 0) / max) * 100) + '%' })]),
+        el('span', { class: 'val', text: (d.lines || 0) + ' lines' }),
+      ]));
+    });
+  }
+  return wrap;
+}
+
+// ---------- security findings ----------
+function renderSecurity(data) {
+  const wrap = el('div');
+  const findings = (data.findings || []).slice();
+  const counts = data.counts || {};
+  if (!data.generated_at) return el('div', { class: 'small', text: 'no security report yet — produced by nightly-security cron (nightly 03:00 CT)' });
+  const head = el('div', { class: 'small' });
+  head.appendChild(document.createTextNode(fmtAge(data.generated_at) + ' · '));
+  ['BLOCKER','HIGH','MEDIUM','LOW','INFO'].forEach(s => {
+    const v = counts[s] || 0;
+    const cls = (s === 'BLOCKER' || s === 'HIGH') ? 'err' : (s === 'MEDIUM' ? 'warn' : 'ok');
+    head.appendChild(el('span', { class: 'pill ' + (v > 0 ? cls : ''), text: s + ' ' + v, style: 'margin-right:4px' }));
+  });
+  wrap.appendChild(head);
+  if (!findings.length) {
+    wrap.appendChild(el('div', { class: 'small', style: 'margin-top:8px', text: 'all clean' }));
+    return wrap;
+  }
+  findings.forEach(f => {
+    const sev = f.severity || 'INFO';
+    const cls = (sev === 'BLOCKER' || sev === 'HIGH') ? 'err' : (sev === 'MEDIUM' ? 'warn' : 'ok');
+    const card = el('div', { class: 'feed-item' });
+    const ctrls = el('div', { class: 'feed-ctrls' });
+    ctrls.appendChild(el('span', { class: 'pill ' + cls, text: sev }));
+    card.appendChild(ctrls);
+    const body = el('div', { class: 'feed-body' });
+    body.appendChild(el('div', null, [el('code', { text: f.kind || 'finding' }), ' ', el('span', { class: 'small', text: f.location || '' })]));
+    if (f.preview) body.appendChild(el('pre', { class: 'small', text: f.preview }));
+    if (f.suggested_fix) body.appendChild(el('div', { class: 'action', text: '→ ' + f.suggested_fix }));
+    card.appendChild(body);
+    wrap.appendChild(card);
+  });
+  return wrap;
+}
+
+// ---------- host audit ----------
+function renderHostAudit(data) {
+  const wrap = el('div');
+  if (!data.generated_at) return el('div', { class: 'small', text: 'no host audit yet — produced by weekly-host-audit cron (Sun 04:00 CT)' });
+  wrap.appendChild(el('div', { class: 'small', text: fmtAge(data.generated_at) }));
+
+  const tiles = el('div', { style: 'display:grid; grid-template-columns:repeat(2, 1fr); gap:8px; margin-top:8px' });
+  function tile(label, value, sub, color) {
+    const t = el('div', { style: 'background:#0d0f12; border:1px solid var(--border); border-radius:4px; padding:8px 10px' });
+    t.appendChild(el('div', { class: 'small', text: label }));
+    t.appendChild(el('div', { style: 'font-size:18px; color:' + (color || 'var(--accent)') + '; margin-top:2px', text: value }));
+    if (sub) t.appendChild(el('div', { class: 'small', text: sub }));
+    return t;
+  }
+  if (data.disk) {
+    const free = data.disk.free_pct || 0;
+    const dColor = free < 10 ? 'var(--err)' : free < 25 ? 'var(--warn)' : 'var(--ok)';
+    tiles.appendChild(tile('disk free', (data.disk.free_gb || 0) + ' GB', (data.disk.free_pct || 0) + '%', dColor));
+  }
+  tiles.appendChild(tile('updates pending', (data.updates_pending || 0) + '', null));
+  tiles.appendChild(tile('auto svcs not running', (data.auto_services_not_running || 0) + '', null));
+  tiles.appendChild(tile('larry uptime', (data.larry_uptime_hours == null ? '?' : data.larry_uptime_hours) + ' h', null));
+  wrap.appendChild(tiles);
+
+  const flags = data.flags || [];
+  if (flags.length) {
+    wrap.appendChild(el('h4', { style: 'margin:10px 0 4px; font-size:12px; color:var(--muted)', text: 'FLAGS' }));
+    flags.forEach(f => {
+      const sev = f.severity || 'INFO';
+      const cls = (sev === 'BLOCKER' || sev === 'HIGH') ? 'err' : (sev === 'MEDIUM' ? 'warn' : 'ok');
+      const card = el('div', { class: 'feed-item' });
+      const ctrls = el('div', { class: 'feed-ctrls' });
+      ctrls.appendChild(el('span', { class: 'pill ' + cls, text: sev }));
+      card.appendChild(ctrls);
+      const body = el('div', { class: 'feed-body' });
+      body.appendChild(el('div', null, [el('code', { text: f.category || '' }), ' ', el('span', { class: 'small', text: f.location || '' })]));
+      if (f.detail) body.appendChild(el('div', { class: 'why', text: f.detail }));
+      if (f.suggested_fix) body.appendChild(el('div', { class: 'action', text: '→ ' + f.suggested_fix }));
+      card.appendChild(body);
+      wrap.appendChild(card);
+    });
+  } else {
+    wrap.appendChild(el('div', { class: 'small', style: 'margin-top:8px', text: 'no flags' }));
+  }
+  return wrap;
+}
+
+function renderOutreachDetail(data) {
+  const prospects = (data.prospects || []).slice();
+  const wrap = el('div');
+  wrap.appendChild(el('div', { class: 'small', text: prospects.length + ' prospects · ' + fmtAge(data.generated_at) }));
+  if (data.summary) wrap.appendChild(el('div', { class: 'small', style: 'margin-top:6px', text: data.summary }));
+  if (!prospects.length) { wrap.appendChild(el('div', { class: 'small', text: 'no prospects loaded yet' })); return wrap; }
+  prospects.forEach(p => {
+    const block = el('div', { class: 'biz-block' });
+    block.appendChild(el('h4', { text: p.name || '(?)' }));
+    const meta = [p.role, p.org, p.email].filter(Boolean).join(' · ');
+    if (meta) block.appendChild(el('div', { class: 'small', text: meta }));
+    if (p.last_touch) block.appendChild(el('div', { class: 'small', text: 'last touch: ' + fmtAge(p.last_touch) }));
+    if (p.notes) block.appendChild(el('div', { class: 'small', style: 'margin-top:4px', text: p.notes }));
+    if (p.suggested_action) block.appendChild(el('div', { style: 'margin-top:4px', text: '→ ' + p.suggested_action }));
+    wrap.appendChild(block);
+  });
+  return wrap;
+}
+const RENDERERS = {
+  'category-bars': renderCategoryBars,
+  'feed': renderFeed,
+  'contact-list': renderContactList,
+  'outreach-detail': renderOutreachDetail,
+  'scout-followups': renderScoutFollowups,
+  'topology': renderTopology,
+  'memory-map': renderMemoryMap,
+  'security': renderSecurity,
+  'host-audit': renderHostAudit,
+};
+function bodyForWidget(w) {
+  const d = widgetData[w.id];
+  if (!d || d.missing) return renderMissing(w, d);
+  const fn = RENDERERS[w.kind] || (function (data) { return el('pre', { class: 'small', text: JSON.stringify(data, null, 2).slice(0, 1500) }); });
+  return fn(d, w.id);
+}
+
+// ---------- master render ----------
+
+function render() {
+  const canvas = document.getElementById('canvas');
+  clear(canvas);
+  const allItems = [];
+  nodes.forEach((n, i) => allItems.push({ kind: 'node', def: n, idx: allItems.length }));
+  widgets.forEach((w, i) => allItems.push({ kind: 'widget', def: w, idx: allItems.length }));
+
+  const cw = canvas.clientWidth || window.innerWidth;
+  const cols = Math.max(1, Math.floor(cw / (460 + 14)));
+
+  allItems.forEach(({ kind, def, idx }) => {
+    const id = (kind === 'node' ? 'node:' : 'widget:') + def.id;
+    const lay = layout[id] || defaultLayoutFor(id, idx, cols);
+    layout[id] = lay; // persist seeded layout
+
+    let panel;
+    if (kind === 'node') {
+      panel = buildPanel(id, def.color || '#5a8db4', def.name || def.id, def.base_url, bodyForNode(def));
+    } else {
+      panel = buildPanel(id, def.color || '#7a8db4', def.title || def.id, def.kind + ' · ' + def.url, bodyForWidget(def));
+    }
+    applyLayout(panel, lay);
+    canvas.appendChild(panel);
+  });
+
+  saveLayout(layout);
+
+  const upCount = Object.values(lastFetch).filter(f => f.ok).length;
+  const dataCount = Object.values(widgetData).filter(d => d && !d.missing).length;
+  document.getElementById('meta').textContent = upCount + '/' + nodes.length + ' nodes up · ' + dataCount + '/' + widgets.length + ' widgets fed · ' + new Date().toLocaleTimeString();
+}
+
+async function tick() {
+  await Promise.all(
+    nodes.map(n => pollNode(n))
+      .concat(widgets.map(w => pollWidget(w)))
+      .concat([loadScoutActions()])
+  );
+  render();
+}
+
+// ---------- toolbar actions ----------
+
+document.getElementById('reloadCron').onclick = async function () {
+  const status = document.getElementById('creatorStatus');
+  status.textContent = 'reloading cron…';
+  try {
+    const r = await fetch(LARRY_BASE + '/api/cron/reload', { method: 'POST', headers: authHeaders() }).then(r => r.json());
+    status.textContent = r.ok ? ('cron: +' + r.added + ' / -' + r.removed + ' = ' + r.active + ' active') : ('cron reload failed: ' + (r.error || ''));
+  } catch (e) { status.textContent = 'cron reload error: ' + e; }
+  setTimeout(function () { status.textContent = ''; }, 8000);
+};
+document.getElementById('resetLayout').onclick = function () {
+  if (!confirm('Reset all panel positions and sizes?')) return;
+  layout = {};
+  saveLayout(layout);
+  render();
+};
+document.getElementById('setToken').onclick = function () {
+  const cur = getToken();
+  const next = prompt('Larry UI auth token (leave blank to clear):', cur);
+  if (next === null) return; // cancel
+  setToken(next.trim());
+  showAuthBanner('');
+  document.getElementById('creatorStatus').textContent = next.trim() ? 'token saved' : 'token cleared';
+  setTimeout(function () { document.getElementById('creatorStatus').textContent = ''; }, 4000);
+  tick();
+};
+document.getElementById('newWidgetBtn').onclick = createWidgetFlow;
+document.getElementById('newWidgetInput').addEventListener('keydown', function (ev) {
+  if (ev.key === 'Enter') createWidgetFlow();
+});
+
+async function createWidgetFlow() {
+  const inp = document.getElementById('newWidgetInput');
+  const status = document.getElementById('creatorStatus');
+  const desc = inp.value.trim();
+  if (!desc) { status.textContent = 'type a description first'; return; }
+  inp.disabled = true;
+  status.textContent = 'asking larry to scaffold the widget (45-90s)…';
+
+  const slugBase = desc.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40);
+  const prompt =
+    'New open-brain widget request: "' + desc + '"\n\n' +
+    'Build it end-to-end using your tools. Steps:\n' +
+    '1. Pick a slug like "' + slugBase + '" (kebab-case, ascii, <=40 chars). If it would clash with an existing widget id, append "-2", "-3", etc.\n' +
+    '2. Design the JSON output shape. Required fields: { "generated_at": "<ISO timestamp>", "items": [...] }. Each item should at least have "title" and "why" (one-line reason). Add "ts" if it has a time, "url" if linkable.\n' +
+    '3. Write the widget producer cron to a NEW file at /c/Users/simon/larry-rust/cron.d/<slug>.toml. The file must contain ONE [[job]] entry with: id="<slug>", name="<short human title>", enabled=true, schedule (default "every 1h" — pick something sensible for the request), tz="America/Chicago", kind="prompt", body=<a complete prompt that uses your tools to fetch real data and ENDS with a write_file call to /c/Users/simon/openbrain/data/<slug>.json>, deliver="none" (the dashboard reads the JSON; do not telegram-spam), timeout_s=600. Triple-check the TOML parses by reading it back.\n' +
+    '4. Read /c/Users/simon/openbrain/widgets.json, append a new entry { id, title, url: "data/<slug>.json", kind: "feed", refresh_s: 120, produced_by: "<slug> cron" }, and write the merged file back. Preserve any "_comment" or other top-level keys.\n' +
+    '5. Reply with ONLY the slug you used, nothing else. No prose, no code fences, just the slug on one line.';
+
+  let slug = null;
+  try {
+    const r = await fetch(LARRY_BASE + '/api/ask', {
+      method: 'POST',
+      headers: Object.assign({ 'content-type': 'application/json' }, authHeaders()),
+      body: JSON.stringify({ prompt, session_id: 'ui:widget-creator' })
+    }).then(r => r.json());
+    if (!r.ok) { status.textContent = 'larry failed: ' + (r.error || 'unknown'); inp.disabled = false; return; }
+    slug = (r.text || '').trim().split(/\s|\n/)[0].replace(/^[`"']+|[`"']+$/g, '').slice(0, 60);
+    if (!slug) { status.textContent = 'larry returned no slug; check the assistant response'; inp.disabled = false; return; }
+    status.textContent = 'scaffolded slug=' + slug + ' · reloading cron…';
+  } catch (e) { status.textContent = 'ask error: ' + e; inp.disabled = false; return; }
+
+  // Reload cron so the new TOML is picked up
+  try {
+    await fetch(LARRY_BASE + '/api/cron/reload', { method: 'POST', headers: authHeaders() });
+  } catch (e) { status.textContent = 'cron reload failed: ' + e; }
+
+  // Trigger first run so data is produced now
+  try {
+    await fetch(LARRY_BASE + '/api/cron/run', { method: 'POST', headers: Object.assign({ 'content-type': 'application/json' }, authHeaders()), body: JSON.stringify({ job_id: slug }) });
+    status.textContent = 'first run kicked off for ' + slug + ' (data should appear in 30-90s)';
+  } catch (e) { status.textContent = 'trigger failed: ' + e; }
+
+  // Refresh widget list from disk
+  await loadConfig();
+  await tick();
+  inp.value = '';
+  inp.disabled = false;
+  setTimeout(function () { status.textContent = ''; }, 12000);
+}
+
+// ---------- boot ----------
+
+(async function () {
+  await loadConfig();
+  await tick();
+  const allRefresh = nodes.map(n => n.refresh_s || 5).concat(widgets.map(w => w.refresh_s || 60));
+  const minRefresh = allRefresh.length ? Math.max(2, Math.min.apply(null, allRefresh)) : 10;
+  setInterval(tick, minRefresh * 1000);
+})();
+</script>
+</body>
+</html>

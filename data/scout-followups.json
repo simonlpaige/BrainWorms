@@ -1,0 +1,27 @@
+{
+  "generated_at": "2026-04-30T04:00:30Z",
+  "items": [
+    {
+      "source_item_id": "ai-scout-rolling|https://github.com/abhigyanpatwari/GitNexus",
+      "title": "Spike GitNexus: Graph RAG over Commonweave or AgentStack repo",
+      "source_title": "abhigyanpatwari/GitNexus — Client-side Graph RAG over any GitHub repo, zero server",
+      "source_url": "https://github.com/abhigyanpatwari/GitNexus",
+      "action_type": "spike",
+      "est_effort_minutes": 30,
+      "body": "GitNexus builds an interactive knowledge graph over a GitHub repo entirely client-side — no server, no API keys. Point it at the Commonweave repo (C:/Users/simon/.openclaw/workspace/commonweave/) or the AgentStack module (modules/agentstack/) and see if the graph surface is genuinely useful for onboarding or cross-module reasoning. The test question: does it tell you something faster than grepping or reading CONTEXT.md manually? If yes, it becomes a research tool for any new client codebase Simon needs to understand quickly.",
+      "prerequisites": ["node + npm installed", "public or locally-accessible GitHub repo URL"],
+      "first_step": "Open https://github.com/abhigyanpatwari/GitNexus in a browser, read the README top-to-bottom (2 min), then try the live demo link if one exists — no install yet."
+    },
+    {
+      "source_item_id": "ai-scout-rolling|https://github.com/warpdotdev/warp",
+      "title": "Evaluate Warp agentic terminal: does it replace any Larry CLI tooling?",
+      "source_title": "warpdotdev/warp — Agentic development environment, born out of the terminal",
+      "source_url": "https://github.com/warpdotdev/warp",
+      "action_type": "spike",
+      "est_effort_minutes": 15,
+      "body": "Warp is a Rust terminal going fully agentic — 11K+ stars in a day signals real momentum. The question for Simon's stack is narrow: does Warp's agentic layer do anything that Claude Code CLI + PowerShell can't already do, specifically around cron monitoring, multi-pane session management, or shell history search? Skim the README and their 'Warp AI' feature page. If it's just a prettier terminal with autocomplete, it's a track. If it has agent-to-shell hooks that could replace the gateway.cmd retry loop or simplify cron debugging, it's worth a 30-min install spike.",
+      "prerequisites": ["Windows build available (check Warp site — was Mac-only historically)"],
+      "first_step": "Run: curl -s https://api.github.com/repos/warpdotdev/warp/releases/latest | node -e \"const d=require('fs').readFileSync('/dev/stdin','utf8');const r=JSON.parse(d);console.log(r.tag_name, r.assets.map(a=>a.name).join(', '))\" to check if a Windows binary shipped in the latest release."
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "generated_at": "2026-04-29T18:20:00Z",
+  "scanned_repos": [
+    "/c/Users/simon/.openclaw/workspace",
+    "/c/Users/simon/larry-rust",
+    "/c/Users/simon/openbrain"
+  ],
+  "findings": [
+    {
+      "severity": "MEDIUM",
+      "kind": "exposed_secret_in_tracked_file",
+      "location": "workspace:memory/2026-04-17.md (lines 106,108,110,146,149)",
+      "preview": "Repeated log entries referencing 'sk_live_...' inline in cron payload (cron id 32e4014b). Key was rotated 2026-04-18; references are historical/log narrative only.",
+      "suggested_fix": "Verify the rotated key is the ONLY version now in vault. The log entries are historical narrative (not a live key), but consider scrubbing if this repo is ever made public."
+    },
+    {
+      "severity": "LOW",
+      "kind": "exposed_secret_in_tracked_file",
+      "location": "workspace:memory/.dreams/short-term-recall.json",
+      "preview": "Contains 'sk_live_REDACTED_ROTATED_20260418' placeholder strings — already redacted at time of writing. Not a live secret.",
+      "suggested_fix": "No immediate action required. Placeholder strings confirm the key was already rotated before this content was written."
+    },
+    {
+      "severity": "LOW",
+      "kind": "exposed_secret_in_tracked_file",
+      "location": "workspace:modules/groundlayer/factory/brands/rivaldrop/_archive/netlify_bak/functions/contact.js + send-sample.js",
+      "preview": "'Authorization': 'Bearer ' + RESEND_KEY — uses env variable reference, not a hardcoded value. Archive path.",
+      "suggested_fix": "INFO-level false positive: no hardcoded value, just a variable reference. Archive code, not deployed. No action needed unless the archive is made public."
+    },
+    {
+      "severity": "INFO",
+      "kind": "info",
+      "location": "larry-rust:src/config.rs, src/providers/anthropic.rs, src/providers/openai_compat.rs, src/ui.rs",
+      "preview": "Pattern matches on field names (api_key: String, bearer_auth) and struct definitions — zero hardcoded values.",
+      "suggested_fix": "False positive. These are struct definitions and HTTP auth logic, not credential exposure."
+    },
+    {
+      "severity": "INFO",
+      "kind": "loose_env_var",
+      "location": "env: ANTHROPIC_API_KEY, OLLAMA_API_KEY, GOOGLE_PLACES_API_KEY, DEEPSEEK_API_KEY, BRAVE_SEARCH_API_KEY",
+      "preview": "5 API keys present in environment (values redacted). Standard dev environment pattern — keys loaded at session start.",
+      "suggested_fix": "Expected behavior for a dev machine. Ensure these are not set in any shared shell profiles committed to git."
+    },
+    {
+      "severity": "INFO",
+      "kind": "info",
+      "location": "global git config: credential.https://codeberg.org.provider=generic",
+      "preview": "Codeberg credential helper set to 'generic' provider. No plaintext credential store confirmed.",
+      "suggested_fix": "Low risk. Verify the generic provider isn't storing tokens in ~/.git-credentials (already confirmed empty in prior audit)."
+    },
+    {
+      "severity": "INFO",
+      "kind": "recent_secret_path_commit",
+      "location": "workspace git log: commits 85c2ebb + 63329a8 (2026-04-29) — cloudflare token cleanup",
+      "preview": "Two commits today removed/redacted the Cloudflare token file. ff08478 (2026-04-27) added prompt injection protection.",
+      "suggested_fix": "Cleanup already done. Confirm history rewrite (git filter-repo) was completed to purge the pre-redaction commit from history."
+    }
+  ],
+  "counts": {
+    "BLOCKER": 0,
+    "HIGH": 0,
+    "MEDIUM": 1,
+    "LOW": 2,
+    "INFO": 4
+  }
+}
